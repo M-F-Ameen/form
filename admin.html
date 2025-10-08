@@ -677,6 +677,22 @@
                 <div class="stat-number" id="internshipApplications">0</div>
                 <div class="stat-label">طلبات تدريب</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rejectedApplications">0</div>
+                <div class="stat-label">الطلبات المرفوضة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="acceptedApplications">0</div>
+                <div class="stat-label">الطلبات المقبولة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="reviewedApplications">0</div>
+                <div class="stat-label">عدد الطلبات التي تمت مراجعتها</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="newApplications">0</div>
+                <div class="stat-label">عدد الطلبات الجديدة</div>
+            </div>
         </div>
 
         <div class="filter-controls">
@@ -686,8 +702,7 @@
                     <select id="statusFilter">
                         <option value="">جميع الحالات</option>
                         <option value="pending">في انتظار المراجعة</option>
-                        <option value="reviewed">قيد المراجعة</option>
-                        <option value="shortlisted">مختار للمقابلة</option>
+                      
                         <option value="rejected">مرفوض</option>
                         <option value="accepted">مقبول</option>
                     </select>
@@ -761,6 +776,9 @@
         // Load applications on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadApplications();
+            // Ensure filters react immediately to status changes
+            const statusEl = document.getElementById('statusFilter');
+            if (statusEl) statusEl.addEventListener('change', applyFilters);
         });
 
         async function loadApplications() {
@@ -821,6 +839,11 @@
             document.getElementById('pendingApplications').textContent = applications.filter(app => app.status === 'pending').length;
             document.getElementById('jobApplications').textContent = applications.filter(app => app.applicationType === 'وظيفة').length;
             document.getElementById('internshipApplications').textContent = applications.filter(app => app.applicationType === 'تدريب').length;
+            document.getElementById('rejectedApplications').textContent = applications.filter(app => normalizeStatus(app.status) === 'rejected').length;
+            document.getElementById('acceptedApplications').textContent = applications.filter(app => normalizeStatus(app.status) === 'accepted').length;
+            const newCount = applications.filter(app => !app.reviewedAt && normalizeStatus(app.status) === 'pending').length;
+            document.getElementById('newApplications').textContent = newCount;
+            document.getElementById('reviewedApplications').textContent = Math.max(0, applications.length - newCount);
         }
 
         function getStatusText(status) {
@@ -834,26 +857,57 @@
             return statusMap[status] || status;
         }
 
-        function applyFilters() {
-            const statusFilter = document.getElementById('statusFilter').value;
-            const typeFilter = document.getElementById('typeFilter').value;
-            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+        // Normalize possible Arabic/English status values to canonical codes
+        function normalizeStatus(value) {
+            const v = (value || '').toString().trim().toLowerCase();
+            switch (v) {
+                case 'pending':
+                case 'في انتظار المراجعة':
+                    return 'pending';
+                case 'reviewed':
+                case 'قيد المراجعة':
+                    return 'reviewed';
+                case 'shortlisted':
+                case 'مختار للمقابلة':
+                    return 'shortlisted';
+                case 'rejected':
+                case 'مرفوض':
+                    return 'rejected';
+                case 'accepted':
+                case 'مقبول':
+                    return 'accepted';
+                default:
+                    return v; // return lowercased raw value if unknown
+            }
+        }
 
-            let filteredApplications = allApplications;
+        function applyFilters() {
+            const statusFilter = (document.getElementById('statusFilter').value || '').trim().toLowerCase();
+            const typeFilter = (document.getElementById('typeFilter').value || '').trim().toLowerCase();
+            const searchFilter = (document.getElementById('searchFilter').value || '').toLowerCase().trim();
+
+            let filteredApplications = Array.isArray(allApplications) ? allApplications.slice() : [];
 
             if (statusFilter) {
-                filteredApplications = filteredApplications.filter(app => app.status === statusFilter);
+                filteredApplications = filteredApplications.filter(app => {
+                    const appStatus = normalizeStatus(app.status);
+                    return appStatus === statusFilter;
+                });
             }
 
             if (typeFilter) {
-                filteredApplications = filteredApplications.filter(app => app.applicationType === typeFilter);
+                filteredApplications = filteredApplications.filter(app => {
+                    const appType = (app.applicationType || '').trim().toLowerCase();
+                    return appType === typeFilter;
+                });
             }
 
             if (searchFilter) {
-                filteredApplications = filteredApplications.filter(app => 
-                    app.fullName.toLowerCase().includes(searchFilter) ||
-                    app.email.toLowerCase().includes(searchFilter)
-                );
+                filteredApplications = filteredApplications.filter(app => {
+                    const name = (app.fullName || '').toLowerCase();
+                    const email = (app.email || '').toLowerCase();
+                    return name.includes(searchFilter) || email.includes(searchFilter);
+                });
             }
 
             displayApplications(filteredApplications);
@@ -1145,22 +1199,12 @@
         }
 
         function createCSVContent(applications) {
-            // CSV Headers (Arabic with English equivalents for Excel compatibility)
+            // CSV with only required fields
             const headers = [
-                'الاسم / Name',
-                'البريد الإلكتروني / Email',
-                'رقم الهاتف / Phone',
-                'المحافظة / Governorate',
-                'التخصص / Major',
-                'سنة التخرج / Graduation Year',
-                'نوع التقديم / Application Type',
-                'الراتب المتوقع / Expected Salary',
-                'متاح من / Availability Date',
-                'المهارات / Skills',
-                'الحالة / Status',
-                'تاريخ التقديم / Submission Date',
-                'تاريخ المراجعة / Review Date',
-                'تمت المراجعة بواسطة / Reviewed By'
+                'Name',
+                'Phone',
+                'Status',
+                'Date'
             ];
 
             // Create CSV header row
@@ -1171,21 +1215,10 @@
             applications.forEach(app => {
                 const row = [
                     `"${app.fullName || ''}"`,
-                    `"${app.email || ''}"`,
                     `"${app.phone || ''}"`,
-                    `"${app.governorate || ''}"`,
-                    `"${app.major || ''}"`,
-                    `"${app.graduationYear || ''}"`,
-                    `"${app.applicationType || ''}"`,
-                    `"${app.expectedSalary || ''}"`,
-                    `"${app.availabilityDate ? new Date(app.availabilityDate).toLocaleDateString('ar-EG') : ''}"`,
-                    `"${app.skills || ''}"`,
                     `"${getStatusText(app.status) || ''}"`,
-                    `"${new Date(app.submittedAt).toLocaleString('ar-EG')}"`,
-                    `"${app.reviewedAt ? new Date(app.reviewedAt).toLocaleString('ar-EG') : ''}"`,
-                    `"${app.reviewedBy || ''}"`
+                    `"${app.submittedAt ? new Date(app.submittedAt).toLocaleString('ar-EG') : ''}"`
                 ];
-                
                 csvContent += row.join(',') + '\n';
             });
 
@@ -1193,7 +1226,7 @@
         }
 
         // Password update logic
-        document.getElementById('savePasswordBtn').onclick = function() {
+        document.getElementById('savePasswordBtn').onclick = async function() {
             var newPass = document.getElementById('newAdminPassword').value.trim();
             var msg = document.getElementById('passwordUpdateMsg');
             if (!newPass) {
@@ -1201,10 +1234,21 @@
                 msg.textContent = '❌ يرجى إدخال كلمة مرور جديدة';
                 return;
             }
-            localStorage.setItem('ADMIN_PANEL_PASSWORD', newPass);
-            msg.style.color = '#2c5234';
-            msg.textContent = '✅ تم تحديث كلمة المرور بنجاح!';
-            document.getElementById('newAdminPassword').value = '';
+            try {
+                const resp = await fetch('/api/admin/password', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPassword: newPass })
+                });
+                const data = await resp.json();
+                if (!resp.ok || !data.success) throw new Error(data.error || 'خطأ في تحديث كلمة المرور');
+                msg.style.color = '#2c5234';
+                msg.textContent = '✅ تم تحديث كلمة المرور بنجاح!';
+                document.getElementById('newAdminPassword').value = '';
+            } catch (e) {
+                msg.style.color = '#dc3545';
+                msg.textContent = '❌ فشل تحديث كلمة المرور: ' + e.message;
+            }
         };
     </script>
 </body>

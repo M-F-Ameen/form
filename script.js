@@ -183,9 +183,7 @@ const loginBtn = document.getElementById('loginBtn');
 const adminPassword = document.getElementById('adminPassword');
 const passwordError = document.getElementById('passwordError');
 
-function getAdminPanelPassword() {
-    return localStorage.getItem('ADMIN_PANEL_PASSWORD') || '12345';
-}
+// Backend verification replaces localStorage password
 
 // Show password modal when admin link is clicked
 adminLink.addEventListener('click', function(e) {
@@ -214,13 +212,23 @@ window.addEventListener('click', function(e) {
 });
 
 // Handle login
-loginBtn.addEventListener('click', function() {
+loginBtn.addEventListener('click', async function() {
     const enteredPassword = adminPassword.value;
-    if (enteredPassword === getAdminPanelPassword()) {
-        // Password correct - redirect to admin panel
-        window.location.href = '/admin';
-    } else {
-        // Password incorrect - show error
+    try {
+        const resp = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: enteredPassword })
+        });
+        const data = await resp.json();
+        if (resp.ok && data.success) {
+            window.location.href = '/admin';
+        } else {
+            passwordError.style.display = 'block';
+            adminPassword.value = '';
+            adminPassword.focus();
+        }
+    } catch (e) {
         passwordError.style.display = 'block';
         adminPassword.value = '';
         adminPassword.focus();
