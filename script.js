@@ -145,7 +145,11 @@ form.addEventListener('submit', async function(e) {
 document.getElementById('email').addEventListener('blur', function() {
     const email = this.value;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
     if (email && !emailRegex.test(email)) {
         this.style.borderColor = '#dc3545';
     } else {
@@ -174,7 +178,69 @@ inputs.forEach(input => {
     });
 });
 
+<<<<<<< HEAD
 
+=======
+// Admin Panel Password Protection
+const adminLink = document.getElementById('adminLink');
+const passwordModal = document.getElementById('passwordModal');
+const closeModal = document.getElementById('closeModal');
+const cancelBtn = document.getElementById('cancelBtn');
+const loginBtn = document.getElementById('loginBtn');
+const adminPassword = document.getElementById('adminPassword');
+const passwordError = document.getElementById('passwordError');
+
+function getAdminPanelPassword() {
+    return localStorage.getItem('ADMIN_PANEL_PASSWORD') || '12345';
+}
+
+// Show password modal when admin link is clicked
+adminLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    passwordModal.style.display = 'block';
+    adminPassword.focus();
+    passwordError.style.display = 'none';
+    adminPassword.value = '';
+});
+
+// Close modal functions
+function closePasswordModal() {
+    passwordModal.style.display = 'none';
+    adminPassword.value = '';
+    passwordError.style.display = 'none';
+}
+
+closeModal.addEventListener('click', closePasswordModal);
+cancelBtn.addEventListener('click', closePasswordModal);
+
+// Close modal when clicking outside
+window.addEventListener('click', function(e) {
+    if (e.target === passwordModal) {
+        closePasswordModal();
+    }
+});
+
+// Handle login
+loginBtn.addEventListener('click', function() {
+    const enteredPassword = adminPassword.value;
+    if (enteredPassword === getAdminPanelPassword()) {
+        // Password correct - redirect to admin panel
+        window.location.href = '/admin';
+    } else {
+        // Password incorrect - show error
+        passwordError.style.display = 'block';
+        adminPassword.value = '';
+        adminPassword.focus();
+    }
+});
+
+// Handle Enter key in password field
+adminPassword.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        loginBtn.click();
+    }
+}); 
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
 
 // Success Popup Functions
 function showSuccessPopup() {
@@ -190,4 +256,8 @@ function showSuccessPopup() {
 function hideSuccessPopup() {
     const popup = document.getElementById('successPopup');
     popup.style.display = 'none';
+<<<<<<< HEAD
 }
+=======
+} 
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1

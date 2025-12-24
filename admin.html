@@ -654,12 +654,15 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <script>
         // Check for admin token on page load
         if (!localStorage.getItem('adminToken')) {
             window.location.href = '/';
         }
     </script>
+=======
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
     <div class="admin-container">
         <div class="admin-header">
             <h1>📊 لوحة إدارة الطلبات</h1>
@@ -683,6 +686,7 @@
                 <div class="stat-number" id="internshipApplications">0</div>
                 <div class="stat-label">طلبات تدريب</div>
             </div>
+<<<<<<< HEAD
             <div class="stat-card">
                 <div class="stat-number" id="rejectedApplications">0</div>
                 <div class="stat-label">الطلبات المرفوضة</div>
@@ -699,6 +703,8 @@
                 <div class="stat-number" id="newApplications">0</div>
                 <div class="stat-label">عدد الطلبات الجديدة</div>
             </div>
+=======
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
         </div>
 
         <div class="filter-controls">
@@ -708,7 +714,12 @@
                     <select id="statusFilter">
                         <option value="">جميع الحالات</option>
                         <option value="pending">في انتظار المراجعة</option>
+<<<<<<< HEAD
                       
+=======
+                        <option value="reviewed">قيد المراجعة</option>
+                        <option value="shortlisted">مختار للمقابلة</option>
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                         <option value="rejected">مرفوض</option>
                         <option value="accepted">مقبول</option>
                     </select>
@@ -755,7 +766,10 @@
         <div class="form-page-link-container">
             <a href="/" class="form-page-link">📝 Form Page</a>
         </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
         <!-- Password Update Section -->
         <div class="password-update-container" style="max-width:400px;margin:40px auto 0 auto;padding:16px 20px;background:#f8f9fa;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
             <h3 style="font-size:1.1em;margin-bottom:12px;">تغيير كلمة مرور لوحة الإدارة</h3>
@@ -779,6 +793,7 @@
         const API_URL = window.location.origin + '/api/applications';
         let allApplications = [];
 
+<<<<<<< HEAD
         // Helper function to get auth headers
         function getAuthHeaders() {
             const token = localStorage.getItem('adminToken');
@@ -800,6 +815,17 @@
                 });
                 const data = await response.json();
 
+=======
+        // Load applications on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadApplications();
+        });
+        async function loadApplications() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                 if (data.success) {
                     allApplications = data.applications;
                     displayApplications(allApplications);
@@ -838,7 +864,11 @@
                     <div data-label="الحالة"><span class="status-badge ${statusClass}">${statusText}</span></div>
                     <div data-label="الإجراءات">
                         <button class="action-btn btn-view" onclick="viewApplication('${app._id}')" title="عرض">👁️<span> عرض</span></button>
+<<<<<<< HEAD
                         ${app.cvFileId ? `<button class="action-btn btn-download" onclick="downloadCV('${app._id}', '${app.fullName}')" title="تحميل السيرة الذاتية">📄<span> CV</span></button>` : ''}
+=======
+                        ${app.cvFilename ? `<button class="action-btn btn-download" onclick="downloadCV('${app._id}', '${app.fullName}')" title="تحميل السيرة الذاتية">📄<span> CV</span></button>` : ''}
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                         <button class="action-btn btn-update" onclick="updateStatus('${app._id}')" title="تحديث">✏️<span> تحديث</span></button>
                         <button class="action-btn btn-delete" onclick="deleteApplication('${app._id}', '${app.fullName}')" title="حذف">🗑️<span> حذف</span></button>
                     </div>
@@ -853,11 +883,14 @@
             document.getElementById('pendingApplications').textContent = applications.filter(app => app.status === 'pending').length;
             document.getElementById('jobApplications').textContent = applications.filter(app => app.applicationType === 'وظيفة').length;
             document.getElementById('internshipApplications').textContent = applications.filter(app => app.applicationType === 'تدريب').length;
+<<<<<<< HEAD
             document.getElementById('rejectedApplications').textContent = applications.filter(app => normalizeStatus(app.status) === 'rejected').length;
             document.getElementById('acceptedApplications').textContent = applications.filter(app => normalizeStatus(app.status) === 'accepted').length;
             const newCount = applications.filter(app => !app.reviewedAt && normalizeStatus(app.status) === 'pending').length;
             document.getElementById('newApplications').textContent = newCount;
             document.getElementById('reviewedApplications').textContent = Math.max(0, applications.length - newCount);
+=======
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
         }
 
         function getStatusText(status) {
@@ -871,6 +904,7 @@
             return statusMap[status] || status;
         }
 
+<<<<<<< HEAD
         // Normalize possible Arabic/English status values to canonical codes
         function normalizeStatus(value) {
             const v = (value || '').toString().trim().toLowerCase();
@@ -922,6 +956,28 @@
                     const email = (app.email || '').toLowerCase();
                     return name.includes(searchFilter) || email.includes(searchFilter);
                 });
+=======
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+
+            let filteredApplications = allApplications;
+
+            if (statusFilter) {
+                filteredApplications = filteredApplications.filter(app => app.status === statusFilter);
+            }
+
+            if (typeFilter) {
+                filteredApplications = filteredApplications.filter(app => app.applicationType === typeFilter);
+            }
+
+            if (searchFilter) {
+                filteredApplications = filteredApplications.filter(app => 
+                    app.fullName.toLowerCase().includes(searchFilter) ||
+                    app.email.toLowerCase().includes(searchFilter)
+                );
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
             }
 
             displayApplications(filteredApplications);
@@ -934,11 +990,17 @@
                 const url = `${API_URL}/${id}`;
                 console.log('🌐 Fetching from URL:', url);
                 
+<<<<<<< HEAD
                 const response = await fetch(url, {
                     headers: getAuthHeaders()
                 });
                 console.log('📡 Response status:', response.status);
 
+=======
+                const response = await fetch(url);
+                console.log('📡 Response status:', response.status);
+                
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -976,8 +1038,13 @@
                         
                         <div style="margin-bottom: 20px;">
                             <h3>السيرة الذاتية</h3>
+<<<<<<< HEAD
                             ${app.cvFileId ?
                                 `<p><strong>السيرة الذاتية:</strong> <button onclick="downloadCV('${app._id}', '${app.fullName}')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">📄 تحميل السيرة الذاتية</button></p>`
+=======
+                            ${app.cvFilename ? 
+                                `<p><strong>السيرة الذاتية:</strong> <button onclick="downloadCV('${app._id}', '${app.fullName}')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">📄 تحميل السيرة الذاتية</button></p>` 
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                                 : '<p><strong>السيرة الذاتية:</strong> غير مرفقة</p>'
                             }
                         </div>
@@ -1032,7 +1099,10 @@
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
+<<<<<<< HEAD
                         ...getAuthHeaders()
+=======
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                     }
                 });
                 
@@ -1072,7 +1142,10 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
+<<<<<<< HEAD
                             ...getAuthHeaders()
+=======
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                         },
                         body: JSON.stringify({
                             status: newStatus,
@@ -1108,9 +1181,13 @@
             try {
                 console.log('📄 Downloading CV for:', fullName, 'ID:', id);
                 
+<<<<<<< HEAD
                 const response = await fetch(`${API_URL}/${id}/cv`, {
                     headers: getAuthHeaders()
                 });
+=======
+                const response = await fetch(`${API_URL}/${id}/cv`);
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                 
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -1219,12 +1296,31 @@
         }
 
         function createCSVContent(applications) {
+<<<<<<< HEAD
             // CSV with only required fields
             const headers = [
                 'Name',
                 'Phone',
                 'Status',
                 'Date'
+=======
+            // CSV Headers (Arabic with English equivalents for Excel compatibility)
+            const headers = [
+                'الاسم / Name',
+                'البريد الإلكتروني / Email',
+                'رقم الهاتف / Phone',
+                'المحافظة / Governorate',
+                'التخصص / Major',
+                'سنة التخرج / Graduation Year',
+                'نوع التقديم / Application Type',
+                'الراتب المتوقع / Expected Salary',
+                'متاح من / Availability Date',
+                'المهارات / Skills',
+                'الحالة / Status',
+                'تاريخ التقديم / Submission Date',
+                'تاريخ المراجعة / Review Date',
+                'تمت المراجعة بواسطة / Reviewed By'
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
             ];
 
             // Create CSV header row
@@ -1235,10 +1331,28 @@
             applications.forEach(app => {
                 const row = [
                     `"${app.fullName || ''}"`,
+<<<<<<< HEAD
                     `"${app.phone || ''}"`,
                     `"${getStatusText(app.status) || ''}"`,
                     `"${app.submittedAt ? new Date(app.submittedAt).toLocaleString('ar-EG') : ''}"`
                 ];
+=======
+                    `"${app.email || ''}"`,
+                    `"${app.phone || ''}"`,
+                    `"${app.governorate || ''}"`,
+                    `"${app.major || ''}"`,
+                    `"${app.graduationYear || ''}"`,
+                    `"${app.applicationType || ''}"`,
+                    `"${app.expectedSalary || ''}"`,
+                    `"${app.availabilityDate ? new Date(app.availabilityDate).toLocaleDateString('ar-EG') : ''}"`,
+                    `"${app.skills || ''}"`,
+                    `"${getStatusText(app.status) || ''}"`,
+                    `"${new Date(app.submittedAt).toLocaleString('ar-EG')}"`,
+                    `"${app.reviewedAt ? new Date(app.reviewedAt).toLocaleString('ar-EG') : ''}"`,
+                    `"${app.reviewedBy || ''}"`
+                ];
+                
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
                 csvContent += row.join(',') + '\n';
             });
 
@@ -1246,7 +1360,11 @@
         }
 
         // Password update logic
+<<<<<<< HEAD
         document.getElementById('savePasswordBtn').onclick = async function() {
+=======
+        document.getElementById('savePasswordBtn').onclick = function() {
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
             var newPass = document.getElementById('newAdminPassword').value.trim();
             var msg = document.getElementById('passwordUpdateMsg');
             if (!newPass) {
@@ -1254,6 +1372,7 @@
                 msg.textContent = '❌ يرجى إدخال كلمة مرور جديدة';
                 return;
             }
+<<<<<<< HEAD
             try {
                 const resp = await fetch('/api/admin/password', {
                     method: 'PUT',
@@ -1273,3 +1392,13 @@
     </script>
 </body>
 </html>
+=======
+            localStorage.setItem('ADMIN_PANEL_PASSWORD', newPass);
+            msg.style.color = '#2c5234';
+            msg.textContent = '✅ تم تحديث كلمة المرور بنجاح!';
+            document.getElementById('newAdminPassword').value = '';
+        };
+    </script>
+</body>
+</html> 
+>>>>>>> 13f013ec2173f51d8cf7d4998d37bd7ced1e5eb1
