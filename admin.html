@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة إدارة الطلبات - بى بى اس سوفت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #2c5234 0%, #1a3a22 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .admin-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #6abd45;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .applications-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .table-header {
+            background: #6abd45;
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+        }
+        
+        .table-content {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .application-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .application-row:hover {
+            background: #f8f9fa;
+        }
+        
+        .application-row:last-child {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-reviewed { background: #d1ecf1; color: #0c5460; }
+        .status-shortlisted { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-accepted { background: #d1e7dd; color: #0f5132; }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view { background: #6abd45; color: white; }
+        .btn-view:hover { background: #5aa035; }
+        
+        .btn-update { background: #007bff; color: white; }
+        .btn-update:hover { background: #0056b3; }
+        
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-delete:hover { background: #c82333; }
+        
+        .btn-download { background: #28a745; color: white; }
+        .btn-download:hover { background: #218838; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .filter-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c5234;
+        }
+        
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e8f5e8;
+            border-radius: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .filter-btn {
+            background: #6abd45;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .filter-btn:hover {
+            background: #5aa035;
+        }
+        
+        .download-btn {
+            background: #28a745 !important;
+        }
+        
+        .download-btn:hover {
+            background: #218838 !important;
+        }
+        
+        /* Form Page Link Styles */
+        .form-page-link-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid #e8f5e8;
+        }
+        
+        .form-page-link {
+            color: #6abd45;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid #6abd45;
+            background: transparent;
+            display: inline-block;
+        }
+        
+        .form-page-link:hover {
+            background: #6abd45;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(106, 189, 69, 0.3);
+        }
+
+        /* Professional Mobile Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 3px !important;
+            }
+            
+            .admin-container {
+                padding: 10px;
+                max-width: 100%;
+            }
+            
+            .application-row {
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto; /* Adjusted to 6 columns */
+                padding: 8px 10px;
+                font-size: 0.8em;
+                gap: 5px;
+            }
+            
+            .application-row > div:nth-child(2) { /* Targets the 2nd column (Email) */
+                display: none;
+            }
+            
+            .table-header .application-row > div:nth-child(2) { /* Targets the 2nd header column */
+                display: none;
+            }
+            
+            .application-row > div:nth-child(5) { /* Targets the 5th column (Submission Date) */
+                display: none;
+            }
+            
+            .table-header .application-row > div:nth-child(5) { /* Targets the 5th header column */
+                display: none;
+            }
+            
+            .admin-header {
+                padding: 25px 20px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+            
+            .admin-header p {
+                font-size: 0.95em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .stat-card {
+                padding: 15px 12px;
+                border-radius: 8px;
+            }
+            
+            .stat-number {
+                font-size: 1.6em;
+                margin-bottom: 4px;
+            }
+            
+            .stat-label {
+                font-size: 0.75em;
+            }
+            
+            .filter-controls {
+                padding: 10px;
+                margin-bottom: 12px;
+                border-radius: 10px;
+            }
+            
+            .filter-group {
+                margin-bottom: 8px;
+            }
+            
+            .filter-group label {
+                font-size: 0.75em;
+                margin-bottom: 2px;
+            }
+            
+            .filter-group select, .filter-group input {
+                padding: 2px;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+            
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.75em;
+                border-radius: 6px;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .filter-group select, .filter-group input {
+                padding: 2px;
+                font-size: 11px;
+            }
+            
+            .filter-btn {
+                padding: 12px 20px;
+                font-size: 0.95em;
+                width: 100%;
+            }
+            
+            .applications-table {
+                border-radius: 8px;
+                overflow: hidden;
+                width: 100%;
+                margin: 0;
+            }
+            
+            .table-header {
+                padding: 6px 8px;
+                font-size: 0.8em;
+            }
+            
+            .table-header .application-row > div:nth-child(5) {
+                display: none;
+            }
+            
+            .table-content {
+                max-height: 70vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+                scrollbar-width: thin;
+                scrollbar-color: #6abd45 #f0f0f0;
+            }
+            
+            .table-content::-webkit-scrollbar {
+                width: 6px;
+            }
+            
+            .table-content::-webkit-scrollbar-track {
+                background: #f0f0f0;
+                border-radius: 3px;
+            }
+            
+            .table-content::-webkit-scrollbar-thumb {
+                background: #6abd45;
+                border-radius: 3px;
+            }
+            
+            .table-content::-webkit-scrollbar-thumb:hover {
+                background: #4a9235;
+            }
+            
+            .application-row {
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+                gap: 4px;
+                padding: 6px 8px;
+                font-size: 0.65em;
+                min-width: 100%;
+            }
+            
+            .application-row > div:nth-child(5) {
+                display: none;
+            }
+            
+            .application-row > div {
+                font-size: 0.75em;
+                padding: 2px 2px;
+                display: flex;
+                gap: 3px;
+            }
+            
+            .status-badge {
+                margin: 2px 0;
+                display: inline-block;
+                padding: 3px 6px;
+                font-size: 0.7em;
+            }
+            
+            .action-btn {
+        padding: 0px;
+        font-size: 0.75em;
+        min-width: 9px;
+        width: 13px;
+        height: 13px;
+        border-radius: 3px;
+        display: flex
+;
+        align-items: center;
+        justify-content: center;
+    }
+            
+            .action-btn span {
+                display: none;
+            }
+            
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+                max-width: none;
+                max-height: 90vh;
+                border-radius: 12px;
+            }
+            
+            .modal-body {
+                padding: 20px;
+                max-height: 70vh;
+            }
+            
+            .form-page-link-container {
+                margin-top: 20px;
+                padding: 15px;
+            }
+            
+            .form-page-link {
+                padding: 12px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 3px !important;
+            }
+            
+            .admin-container {
+                padding: 5px;
+            }
+            
+            .application-row {
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto; /* Adjusted to 6 columns */
+                padding: 4px 6px;
+                font-size: 0.7em;
+                gap: 3px;
+            }
+            
+            .application-row > div:nth-child(2) { /* Targets the 2nd column (Email) */
+                display: none;
+            }
+            
+            .table-header .application-row > div:nth-child(2) { /* Targets the 2nd header column */
+                display: none;
+            }
+            
+            .application-row > div:nth-child(5) { /* Targets the 5th column (Submission Date) */
+                display: none;
+            }
+            
+            .table-header .application-row > div:nth-child(5) { /* Targets the 5th header column */
+                display: none;
+            }
+            
+            .admin-header {
+                padding: 20px 15px;
+                border-radius: 10px;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.5em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .stat-card {
+                padding: 12px 10px;
+                border-radius: 6px;
+            }
+            
+            .stat-number {
+                font-size: 1.4em;
+                margin-bottom: 3px;
+            }
+            
+            .filter-controls {
+                padding: 8px;
+                border-radius: 6px;
+                margin-bottom: 8px;
+            }
+            
+            .filter-group {
+                margin-bottom: 6px;
+            }
+            
+            .filter-group label {
+                font-size: 0.7em;
+                margin-bottom: 1px;
+            }
+            
+            .filter-group select, .filter-group input {
+                padding: 2px;
+                font-size: 11px;
+                border-radius: 4px;
+            }
+            
+            .filter-btn {
+                padding: 6px 10px;
+                font-size: 0.75em;
+                border-radius: 6px;
+            }
+            
+            .filter-group select, .filter-group input {
+                padding: 2px;
+                font-size: 11px;
+            }
+            
+            .filter-btn {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            
+            .table-header {
+                padding: 4px 6px;
+                font-size: 0.65em;
+            }
+            
+            .table-header .application-row > div:nth-child(5) {
+                display: none;
+            }
+            
+            .application-row {
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+                padding: 4px 6px;
+                font-size: 0.6em;
+                gap: 3px;
+            }
+            
+            .application-row > div:nth-child(5) {
+                display: none;
+            }
+            
+            .application-row > div {
+                font-size: 0.7em;
+                padding: 2px 2px;
+                display: flex;
+                gap: 3px;
+            }
+            
+            .action-btn {
+        padding: 0px;
+        font-size: 0.75em;
+        min-width: 9px;
+        width: 13px;
+        height: 13px;
+        border-radius: 3px;
+        display: flex
+;
+        align-items: center;
+        justify-content: center;
+    }
+            
+            .modal-content {
+                margin: 2% auto;
+                width: 98%;
+                border-radius: 10px;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+        }
+
+        /* Tablet Landscape */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .admin-container {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .filter-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .application-row {
+                grid-template-columns: 1fr 1fr 1fr 1fr auto;
+                gap: 12px;
+                padding: 15px;
+            }
+            
+            .application-row > div:nth-child(5),
+            .application-row > div:nth-child(6) {
+                display: none;
+            }
+            
+            .table-header .application-row > div:nth-child(5),
+            .table-header .application-row > div:nth-child(6) {
+                display: none;
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            .admin-container {
+                max-width: 1400px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>📊 لوحة إدارة الطلبات</h1>
+            <p>بى بى اس سوفت - إدارة طلبات التوظيف والتدريب</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalApplications">0</div>
+                <div class="stat-label">إجمالي الطلبات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingApplications">0</div>
+                <div class="stat-label">في انتظار المراجعة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="jobApplications">0</div>
+                <div class="stat-label">طلبات وظائف</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="internshipApplications">0</div>
+                <div class="stat-label">طلبات تدريب</div>
+            </div>
+        </div>
+
+        <div class="filter-controls">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>حالة الطلب</label>
+                    <select id="statusFilter">
+                        <option value="">جميع الحالات</option>
+                        <option value="pending">في انتظار المراجعة</option>
+                        <option value="reviewed">قيد المراجعة</option>
+                        <option value="shortlisted">مختار للمقابلة</option>
+                        <option value="rejected">مرفوض</option>
+                        <option value="accepted">مقبول</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>نوع التقديم</label>
+                    <select id="typeFilter">
+                        <option value="">جميع الأنواع</option>
+                        <option value="وظيفة">وظيفة</option>
+                        <option value="تدريب">تدريب</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>البحث بالاسم</label>
+                    <input type="text" id="searchFilter" placeholder="ابحث بالاسم...">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn" onclick="applyFilters()">🔍 تطبيق الفلاتر</button>
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn download-btn" onclick="downloadExcel()">📊 تحميل Excel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="applications-table">
+            <div class="table-header">
+                <div class="application-row">
+                    <div>الاسم</div>
+                    <div>البريد الإلكتروني</div>
+                    <div>نوع التقديم</div>
+                    <div>التخصص</div>
+                    <div>تاريخ التقديم</div>
+                    <div>الحالة</div>
+                    <div>الإجراءات</div>
+                </div>
+            </div>
+            <div class="table-content" id="applicationsTable">
+                <!-- Applications will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Form Page Link -->
+        <div class="form-page-link-container">
+            <a href="/" class="form-page-link">📝 Form Page</a>
+        </div>
+        <!-- Password Update Section -->
+        <div class="password-update-container" style="max-width:400px;margin:40px auto 0 auto;padding:16px 20px;background:#f8f9fa;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+            <h3 style="font-size:1.1em;margin-bottom:12px;">تغيير كلمة مرور لوحة الإدارة</h3>
+            <input type="password" id="newAdminPassword" placeholder="أدخل كلمة مرور جديدة" style="width:70%;padding:8px 10px;border-radius:6px;border:1px solid #ccc;font-size:1em;">
+            <button id="savePasswordBtn" style="padding:8px 18px;margin-right:8px;background:#6abd45;color:white;border:none;border-radius:6px;font-weight:600;cursor:pointer;">حفظ</button>
+            <div id="passwordUpdateMsg" style="margin-top:10px;font-size:0.95em;"></div>
+        </div>
+    </div>
+
+    <!-- Modal for viewing application details -->
+    <div id="applicationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalContent">
+                <!-- Application details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin + '/api/applications';
+        let allApplications = [];
+
+        // Load applications on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadApplications();
+        });
+        async function loadApplications() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                if (data.success) {
+                    allApplications = data.applications;
+                    displayApplications(allApplications);
+                    updateStats(allApplications);
+                } else {
+                    console.error('Failed to load applications:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+            }
+        }
+
+        function displayApplications(applications) {
+            const tableContent = document.getElementById('applicationsTable');
+            tableContent.innerHTML = '';
+
+            if (applications.length === 0) {
+                tableContent.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">لا توجد طلبات</div>';
+                return;
+            }
+
+            applications.forEach(app => {
+                const row = document.createElement('div');
+                row.className = 'application-row';
+                
+                const submittedDate = new Date(app.submittedAt).toLocaleDateString('ar-EG');
+                const statusClass = `status-${app.status}`;
+                const statusText = getStatusText(app.status);
+
+                row.innerHTML = `
+                    <div data-label="الاسم">${app.fullName}</div>
+                    <div data-label="البريد الإلكتروني">${app.email}</div>
+                    <div data-label="نوع التقديم">${app.applicationType}</div>
+                    <div data-label="التخصص">${app.major}</div>
+                    <div data-label="تاريخ التقديم">${submittedDate}</div>
+                    <div data-label="الحالة"><span class="status-badge ${statusClass}">${statusText}</span></div>
+                    <div data-label="الإجراءات">
+                        <button class="action-btn btn-view" onclick="viewApplication('${app._id}')" title="عرض">👁️<span> عرض</span></button>
+                        ${app.cvFilename ? `<button class="action-btn btn-download" onclick="downloadCV('${app._id}', '${app.fullName}')" title="تحميل السيرة الذاتية">📄<span> CV</span></button>` : ''}
+                        <button class="action-btn btn-update" onclick="updateStatus('${app._id}')" title="تحديث">✏️<span> تحديث</span></button>
+                        <button class="action-btn btn-delete" onclick="deleteApplication('${app._id}', '${app.fullName}')" title="حذف">🗑️<span> حذف</span></button>
+                    </div>
+                `;
+                
+                tableContent.appendChild(row);
+            });
+        }
+
+        function updateStats(applications) {
+            document.getElementById('totalApplications').textContent = applications.length;
+            document.getElementById('pendingApplications').textContent = applications.filter(app => app.status === 'pending').length;
+            document.getElementById('jobApplications').textContent = applications.filter(app => app.applicationType === 'وظيفة').length;
+            document.getElementById('internshipApplications').textContent = applications.filter(app => app.applicationType === 'تدريب').length;
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'في انتظار المراجعة',
+                'reviewed': 'قيد المراجعة',
+                'shortlisted': 'مختار للمقابلة',
+                'rejected': 'مرفوض',
+                'accepted': 'مقبول'
+            };
+            return statusMap[status] || status;
+        }
+
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+
+            let filteredApplications = allApplications;
+
+            if (statusFilter) {
+                filteredApplications = filteredApplications.filter(app => app.status === statusFilter);
+            }
+
+            if (typeFilter) {
+                filteredApplications = filteredApplications.filter(app => app.applicationType === typeFilter);
+            }
+
+            if (searchFilter) {
+                filteredApplications = filteredApplications.filter(app => 
+                    app.fullName.toLowerCase().includes(searchFilter) ||
+                    app.email.toLowerCase().includes(searchFilter)
+                );
+            }
+
+            displayApplications(filteredApplications);
+        }
+
+        async function viewApplication(id) {
+            console.log('🔍 Viewing application with ID:', id);
+            
+            try {
+                const url = `${API_URL}/${id}`;
+                console.log('🌐 Fetching from URL:', url);
+                
+                const response = await fetch(url);
+                console.log('📡 Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📄 Response data:', data);
+                
+                if (data.success) {
+                    const app = data.application;
+                    const modalContent = document.getElementById('modalContent');
+                    
+                    modalContent.innerHTML = `
+                        <h2>تفاصيل الطلب</h2>
+                        <div style="margin-bottom: 20px;">
+                            <h3>البيانات الشخصية</h3>
+                            <p><strong>الاسم:</strong> ${app.fullName || 'غير محدد'}</p>
+                            <p><strong>البريد الإلكتروني:</strong> ${app.email || 'غير محدد'}</p>
+                            <p><strong>رقم الهاتف:</strong> ${app.phone || 'غير محدد'}</p>
+                            <p><strong>المحافظة:</strong> ${app.governorate || 'غير محدد'}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3>البيانات الأكاديمية</h3>
+                            <p><strong>التخصص:</strong> ${app.major || 'غير محدد'}</p>
+                            <p><strong>سنة التخرج:</strong> ${app.graduationYear || 'غير محدد'}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3>تفاصيل التقديم</h3>
+                            <p><strong>نوع التقديم:</strong> ${app.applicationType || 'غير محدد'}</p>
+                            ${app.expectedSalary ? `<p><strong>الراتب المتوقع:</strong> ${app.expectedSalary} جنيه مصري</p>` : ''}
+                            ${app.availabilityDate ? `<p><strong>متاح من:</strong> ${new Date(app.availabilityDate).toLocaleDateString('ar-EG')}</p>` : ''}
+                            <p><strong>المهارات:</strong> ${app.skills || 'غير محدد'}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3>السيرة الذاتية</h3>
+                            ${app.cvFilename ? 
+                                `<p><strong>السيرة الذاتية:</strong> <button onclick="downloadCV('${app._id}', '${app.fullName}')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">📄 تحميل السيرة الذاتية</button></p>` 
+                                : '<p><strong>السيرة الذاتية:</strong> غير مرفقة</p>'
+                            }
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3>حالة الطلب</h3>
+                            <p><strong>الحالة:</strong> <span class="status-badge status-${app.status || 'pending'}">${getStatusText(app.status)}</span></p>
+                            <p><strong>تاريخ التقديم:</strong> ${app.submittedAt ? new Date(app.submittedAt).toLocaleString('ar-EG') : 'غير محدد'}</p>
+                            ${app.reviewedAt ? `<p><strong>تاريخ المراجعة:</strong> ${new Date(app.reviewedAt).toLocaleString('ar-EG')}</p>` : ''}
+                            ${app.reviewedBy ? `<p><strong>تمت المراجعة بواسطة:</strong> ${app.reviewedBy}</p>` : ''}
+                        </div>
+                    `;
+                    
+                    const modal = document.getElementById('applicationModal');
+                    modal.style.display = 'block';
+                    console.log('✅ Modal displayed successfully');
+                } else {
+                    console.error('❌ API returned error:', data.error);
+                    alert('❌ فشل في تحميل تفاصيل الطلب: ' + (data.error || 'خطأ غير محدد'));
+                }
+            } catch (error) {
+                console.error('❌ Error viewing application:', error);
+                alert('❌ حدث خطأ في تحميل تفاصيل الطلب: ' + error.message);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.style.display = 'none';
+            console.log('🔒 Modal closed');
+        }
+
+        async function deleteApplication(id, fullName) {
+            console.log('🔍 Delete function called with:', { id, fullName });
+            
+            // Show confirmation dialog
+            const confirmed = confirm(`⚠️ هل أنت متأكد من حذف طلب ${fullName}؟\n\nهذا الإجراء لا يمكن التراجع عنه.`);
+            
+            if (!confirmed) {
+                console.log('❌ User cancelled deletion');
+                return;
+            }
+            
+            try {
+                console.log('🗑️ Starting deletion process for ID:', id);
+                console.log('🌐 API_URL:', API_URL);
+                
+                const deleteUrl = `${API_URL}/${id}`;
+                console.log('🔗 Full delete URL:', deleteUrl);
+                
+                const response = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                console.log('📡 Delete response status:', response.status);
+                console.log('📡 Delete response headers:', response.headers);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Response error text:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('📄 Delete response data:', data);
+                
+                if (data.success) {
+                    console.log('✅ Delete successful');
+                    alert('✅ تم حذف الطلب بنجاح');
+                    loadApplications(); // Reload applications
+                } else {
+                    console.error('❌ Delete failed:', data.error);
+                    alert('❌ فشل في حذف الطلب: ' + (data.error || 'خطأ غير محدد'));
+                }
+            } catch (error) {
+                console.error('❌ Error deleting application:', error);
+                alert('❌ حدث خطأ في حذف الطلب: ' + error.message);
+            }
+        }
+
+        async function updateStatus(id) {
+            const newStatus = prompt('أدخل الحالة الجديدة (pending/reviewed/shortlisted/rejected/accepted):');
+            const reviewedBy = prompt('أدخل اسم المراجع:');
+            
+            if (newStatus && reviewedBy) {
+                try {
+                    const response = await fetch(`${API_URL}/${id}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            status: newStatus,
+                            reviewedBy: reviewedBy
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('✅ تم تحديث حالة الطلب بنجاح');
+                        loadApplications(); // Reload applications
+                    } else {
+                        alert('❌ فشل في تحديث الحالة: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    alert('❌ حدث خطأ في تحديث الحالة');
+                }
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('applicationModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Download CV function
+        async function downloadCV(id, fullName) {
+            try {
+                console.log('📄 Downloading CV for:', fullName, 'ID:', id);
+                
+                const response = await fetch(`${API_URL}/${id}/cv`);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    
+                    // Check if it's a file not found error (Railway ephemeral storage issue)
+                    if (errorData.error && errorData.error.includes('CV file not found on server')) {
+                        console.log('📄 Railway ephemeral storage issue detected');
+                        console.log('📄 Debug info:', errorData.debug);
+                        
+                        // Show a more helpful error message
+                        const message = '❌ السيرة الذاتية غير متاحة للتحميل.\n\n' +
+                                       'هذا يحدث لأن Railway يحذف الملفات عند إعادة تشغيل الخادم.\n\n' +
+                                       'للحصول على ملفات دائمة، يرجى:\n' +
+                                       '1. استخدام خدمة تخزين سحابية مثل AWS S3\n' +
+                                       '2. أو إعادة رفع الملف بعد إعادة تشغيل الخادم';
+                        
+                        alert(message);
+                        return;
+                    }
+                    
+                    throw new Error(errorData.error || 'Failed to download CV');
+                }
+                
+                // Get the filename from the response headers
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = `CV_${fullName}.pdf`;
+                
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                
+                // Create blob and download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                console.log('✅ CV downloaded successfully');
+                
+            } catch (error) {
+                console.error('❌ Error downloading CV:', error);
+                alert('❌ فشل في تحميل السيرة الذاتية: ' + error.message);
+            }
+        }
+
+        // Test delete function
+        function testDelete() {
+            console.log('🧪 Test delete function called');
+            alert('Test delete function is working!');
+        }
+
+        // Excel Download Function
+        function downloadExcel() {
+            // Get current filtered applications or all applications
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+
+            let applicationsToExport = allApplications;
+
+            // Apply same filters as the table
+            if (statusFilter) {
+                applicationsToExport = applicationsToExport.filter(app => app.status === statusFilter);
+            }
+
+            if (typeFilter) {
+                applicationsToExport = applicationsToExport.filter(app => app.applicationType === typeFilter);
+            }
+
+            if (searchFilter) {
+                applicationsToExport = applicationsToExport.filter(app => 
+                    app.fullName.toLowerCase().includes(searchFilter) ||
+                    app.email.toLowerCase().includes(searchFilter)
+                );
+            }
+
+            if (applicationsToExport.length === 0) {
+                alert('❌ لا توجد بيانات للتصدير');
+                return;
+            }
+
+            // Create CSV content
+            const csvContent = createCSVContent(applicationsToExport);
+            
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `job-applications-${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function createCSVContent(applications) {
+            // CSV Headers (Arabic with English equivalents for Excel compatibility)
+            const headers = [
+                'الاسم / Name',
+                'البريد الإلكتروني / Email',
+                'رقم الهاتف / Phone',
+                'المحافظة / Governorate',
+                'التخصص / Major',
+                'سنة التخرج / Graduation Year',
+                'نوع التقديم / Application Type',
+                'الراتب المتوقع / Expected Salary',
+                'متاح من / Availability Date',
+                'المهارات / Skills',
+                'الحالة / Status',
+                'تاريخ التقديم / Submission Date',
+                'تاريخ المراجعة / Review Date',
+                'تمت المراجعة بواسطة / Reviewed By'
+            ];
+
+            // Create CSV header row
+            let csvContent = '\ufeff'; // BOM for Arabic text support
+            csvContent += headers.join(',') + '\n';
+
+            // Add data rows
+            applications.forEach(app => {
+                const row = [
+                    `"${app.fullName || ''}"`,
+                    `"${app.email || ''}"`,
+                    `"${app.phone || ''}"`,
+                    `"${app.governorate || ''}"`,
+                    `"${app.major || ''}"`,
+                    `"${app.graduationYear || ''}"`,
+                    `"${app.applicationType || ''}"`,
+                    `"${app.expectedSalary || ''}"`,
+                    `"${app.availabilityDate ? new Date(app.availabilityDate).toLocaleDateString('ar-EG') : ''}"`,
+                    `"${app.skills || ''}"`,
+                    `"${getStatusText(app.status) || ''}"`,
+                    `"${new Date(app.submittedAt).toLocaleString('ar-EG')}"`,
+                    `"${app.reviewedAt ? new Date(app.reviewedAt).toLocaleString('ar-EG') : ''}"`,
+                    `"${app.reviewedBy || ''}"`
+                ];
+                
+                csvContent += row.join(',') + '\n';
+            });
+
+            return csvContent;
+        }
+
+        // Password update logic
+        document.getElementById('savePasswordBtn').onclick = function() {
+            var newPass = document.getElementById('newAdminPassword').value.trim();
+            var msg = document.getElementById('passwordUpdateMsg');
+            if (!newPass) {
+                msg.style.color = '#dc3545';
+                msg.textContent = '❌ يرجى إدخال كلمة مرور جديدة';
+                return;
+            }
+            localStorage.setItem('ADMIN_PANEL_PASSWORD', newPass);
+            msg.style.color = '#2c5234';
+            msg.textContent = '✅ تم تحديث كلمة المرور بنجاح!';
+            document.getElementById('newAdminPassword').value = '';
+        };
+    </script>
+</body>
+</html> 
