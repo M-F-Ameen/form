@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تقديم وظيفة/تدريب - بى بى اس سوفت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==" 
+                 alt="شعار بى بى اس سوفت" class="company-logo" id="companyLogo">
+            <div class="company-name">بى بى اس سوفت</div>
+            <h1>نموذج تقديم وظيفة/تدريب</h1>
+            <p>جزء من عملك - انضم إلى فريقنا المتميز</p>
+        </div>
+
+        <div class="form-container">
+            <form id="jobApplicationForm">
+                <div class="form-section-title">📋 البيانات الشخصية</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">الاسم الكامل</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">رقم الهاتف</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="governorate">المحافظة</label>
+                        <select id="governorate" name="governorate" required>
+                            <option value="">اختر المحافظة</option>
+                            <option value="القاهرة">القاهرة</option>
+                            <option value="الجيزة">الجيزة</option>
+                            <option value="الإسكندرية">الإسكندرية</option>
+                            <option value="الدقهلية">الدقهلية</option>
+                            <option value="البحر الأحمر">البحر الأحمر</option>
+                            <option value="البحيرة">البحيرة</option>
+                            <option value="الفيوم">الفيوم</option>
+                            <option value="الغربية">الغربية</option>
+                            <option value="الإسماعيلية">الإسماعيلية</option>
+                            <option value="المنوفية">المنوفية</option>
+                            <option value="المنيا">المنيا</option>
+                            <option value="القليوبية">القليوبية</option>
+                            <option value="الوادي الجديد">الوادي الجديد</option>
+                            <option value="شمال سيناء">شمال سيناء</option>
+                            <option value="جنوب سيناء">جنوب سيناء</option>
+                            <option value="الشرقية">الشرقية</option>
+                            <option value="أسوان">أسوان</option>
+                            <option value="أسيوط">أسيوط</option>
+                            <option value="بني سويف">بني سويف</option>
+                            <option value="بورسعيد">بورسعيد</option>
+                            <option value="دمياط">دمياط</option>
+                            <option value="كفر الشيخ">كفر الشيخ</option>
+                            <option value="الأقصر">الأقصر</option>
+                            <option value="مطروح">مطروح</option>
+                            <option value="قنا">قنا</option>
+                            <option value="سوهاج">سوهاج</option>
+                            <option value="السويس">السويس</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section-title">🎓 البيانات الأكاديمية</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="major">التخصص الدراسي</label>
+                        <input type="text" id="major" name="major" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="graduationYear">سنة التخرج</label>
+                        <select id="graduationYear" name="graduationYear" required>
+                            <option value="">اختر سنة التخرج</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section-title">💼 نوع التقديم</div>
+
+                <div class="form-group">
+                    <label class="required-field">  عليك اختيار اذا كنت  متقدم لوظيفه ام تدريب⚠️ </label>
+                   
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="job" name="applicationType" value="وظيفة" required>
+                            <label for="job">وظيفة</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="internship" name="applicationType" value="تدريب" required>
+                            <label for="internship">تدريب</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الحقول التي تظهر عند اختيار "وظيفة" -->
+                <div id="jobFields" class="conditional-fields">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expectedSalary">الراتب المتوقع (بالجنيه المصري)</label>
+                            <input type="number" id="expectedSalary" name="expectedSalary" min="0" placeholder="مثال: 5000">
+                        </div>
+                        <div class="form-group">
+                            <label for="availabilityDate">متاح للعمل من تاريخ</label>
+                            <input type="date" id="availabilityDate" name="availabilityDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-title">🛠️ المهارات والخبرات</div>
+
+                <div class="form-group">
+                    <label for="skills">المهارات الأساسية</label>
+                    <textarea id="skills" name="skills" placeholder="اذكر مهاراتك الأساسية مفصولة بفواصل (مثال: البرمجة، التصميم، إدارة المشاريع)" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="resume" class="required-field">رفع السيرة الذاتية</label>
+                    <div class="file-upload required" id="fileUploadContainer">
+                        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                        <label for="resume" class="file-upload-label">
+                            📎 اضغط لاختيار السيرة الذاتية (PDF, Word)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="alert success" id="successAlert">
+                    ✅ تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً من فريق بى بى اس سوفت.
+                </div>
+
+                <div class="alert error" id="errorAlert">
+                    ❌ حدث خطأ في الإرسال. يرجى المحاولة مرة أخرى.
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>جاري الإرسال...</p>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    🚀 إرسال الطلب
+                </button>
+            </form>
+        </div>
+
+
+
+        <!-- Success Popup Modal -->
+        <div id="successPopup" class="success-popup">
+            <div class="success-content">
+                <div class="success-icon">✅</div>
+                <div class="success-text">تم إرسال الطلب بنجاح!</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
